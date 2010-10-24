@@ -1,0 +1,8 @@
+<forwarder>
+	<in>
+	  <bind addr = "tcp://eth0:0:4920"/>
+	</in>
+	<out>
+	  <bind addr = "tcp://eth0:0:4921"/>
+	</out>
+</forwarder>

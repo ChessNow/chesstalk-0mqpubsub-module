@@ -1,0 +1,7 @@
+Just send the move number followed by the move string.
+
+s_send(pub_socket, "1. e4");
+
+s_send(pub_socket, "1... e5");
+
+The receving end can clearly see when a game starts, and use the default timers to start the clock.

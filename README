@@ -1,0 +1,79 @@
+This is an output module which plugs into chesstalk, to transmit each official move entry to a ZeroMQ subscription ring.
+
+In the ZeroMQ publish/subscription model, this component is considered the "prompt" of a zeromq-chat consisting of prompt and display.
+
+Usually, once the move events have hit the subscription ring you would then "subscribe" to it from a FastCGI ajaxtime instance, for example.
+
+That instance would implement the complete clock and feed the move data (through a poll event, aka POST request) on to the web browser.
+
+--
+
+autoreconf --force --install
+
+# prepare zeromq into a package config location
+
+sudo apt-get install uuid-dev
+tar xvfz zeromq-2.0.10.tar.gz
+cd zeromq-2.0.10
+mkdir zerosum
+cd zerosum
+../configure --prefix=$HOME/zeromq-2.0.10
+make install
+
+--
+
+confirm that you can pkg-config your zeromq installation:
+
+PKG_CONFIG_PATH=$HOME/zeromq-2.0.10/lib/pkgconfig  pkg-config --libs libzmq
+
+should return a clean response with a -L directory path and ending in -lzmq
+
+--
+
+mkdir decimate
+cd decimate
+export PKG_CONFIG_PATH=$HOME/zeromq-2.0.10/lib/pkgconfig 
+../configure --prefix=$HOME/bin/chesstalk
+make
+make install
+
+
+
+See the src/src/run-subscription-forwarder.sh to establish the ZeroMQ network.
+
+Normally that would be the "in" side of a zmq_forwarder configuration. The "out" side would have FastCGI-ajaxtime connect to it.
+
+and you run that from the compiled module directory such as decimate/module/0mqpubsub/.libs
+
+A sample .xml file for the zmq_forwarder is as follows:
+
+<forwarder>
+ <in>
+ <bind addr = "tcp://eth0:4920"/>
+ </in>
+ <out>
+ <bind addr = "tcp://eth0:4921"/>
+ </out>
+</forwarder>
+
+--
+
+You can specify environment variables for the PUB_SERVER and PUB_PORT that ZeroMQ is sitting at,
+
+See the run-0mqpubsub-module.sh script for actually invoking chesstalk with the 0mqpubsub module.
+
+
+
+--
+
+Run the src/publish-move command, with those same two PUB environment variables, along with a move number and move string to simulate a submission.
+
+For example:
+
+PUB_SERVER=localhost PUB_PORT=4920 src/publish-move 1. Nc3
+PUB_SERVER=localhost PUB_PORT=4920 src/publish-move 1... e5
+PUB_SERVER=localhost PUB_PORT=4920 src/publish-move 2. e4
+PUB_SERVER=localhost PUB_PORT=4920 src/publish-move 2... Nf6
+
+representing a white move, followed by a black response, and then another white move, and a black response.
+
