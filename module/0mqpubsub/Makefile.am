@@ -1,7 +1,7 @@
 
 lib_LTLIBRARIES = libchesstalk_0mqpubsub.la
 
-AM_CFLAGS = 
+AM_CFLAGS = -Wall
 
 include_HEADERS = 
 libchesstalk_0mqpubsub_la_DEFINES = 

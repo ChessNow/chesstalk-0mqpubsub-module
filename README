@@ -30,6 +30,14 @@ should return a clean response with a -L directory path and ending in -lzmq
 
 --
 
+# prep the chesstalk-0mqpubsub-module distribution to generate a configure script
+# (run this from the base direcotry containing README and configure.ac)
+
+libtoolize
+autoreconf --force --install
+
+# compile and install chesstalk-0mqpubsub-module distribution
+
 mkdir decimate
 cd decimate
 export PKG_CONFIG_PATH=$HOME/zeromq-2.0.10/lib/pkgconfig 

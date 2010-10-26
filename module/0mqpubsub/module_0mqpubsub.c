@@ -18,8 +18,6 @@
 
 #include "zmsg.c"
 
-signed long zeitgeist_identifier;
-
 #define ZMQ_CONNECTED 0x1
 
 struct workpack {
@@ -42,8 +40,6 @@ int move_submission(int move_number, char *move_string, int white_move) {
   int retval;
 
   char send_string[40];
-
-  int len;
 
   assert(move_string!=NULL);
 
@@ -86,8 +82,6 @@ int module_shutdown() {
 
   int close_retval, term_retval;
   
-  zeitgeist_identifier = -1;
-
   close_retval = zmq_close(w.pub_socket);
   if (close_retval!=0) {
     printf("%s: Trouble with call to zmq_close.\n", __FUNCTION__);
@@ -108,8 +102,6 @@ int module_entry(struct chesstalk_module *m) {
 
   char *env_PUB_PORT = getenv("PUB_PORT");
 
-  int retval;
-
   if (env_PUB_ADDRESS == NULL || env_PUB_PORT==NULL) {
     printf("%s: Need both a PUB_ADDRESS and PUB_PORT specified.\n", __FUNCTION__);
     return -1;
@@ -120,7 +112,7 @@ int module_entry(struct chesstalk_module *m) {
   {
     long int conversion = strtol(env_PUB_PORT, NULL, 10);
     if (conversion<0 || conversion>65535) {
-      printf("%s: ZEITGEIST_PORT out of range.\n", __FUNCTION__);
+      printf("%s: PUB_PORT out of range.\n", __FUNCTION__);
       return -1;
     }
     port = conversion;

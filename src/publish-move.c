@@ -130,8 +130,8 @@ int main(int argc, char *argv[]) {
       return -1;
     }
 
-    sprintf(string_white, "%d.", move);
-    sprintf(string_black, "%d...", move);
+    sprintf(string_white, "%ld.", move);
+    sprintf(string_black, "%ld...", move);
 
     if (strncmp(move_number, string_white, strlen(string_white)) && strncmp(move_number, string_black, strlen(string_black))) {
       printf("%s: Got move=%ld and expected either a white move as %s or a black response as %s; rejecting %s\n", __FUNCTION__, move, string_white, string_black, move_number);
